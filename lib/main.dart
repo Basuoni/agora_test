@@ -60,8 +60,8 @@ class _MyHomePageState extends State<MyHomePage> {
       context,
       MaterialPageRoute(
         builder: (context) => CallScreen(
-          userModel: UserModel(isVolunteer: false),
-          channelName: 'mina',
+          userModel: UserModel(isVolunteer: true),
+          channelName: 'xx',
         ),
       ),
     );
