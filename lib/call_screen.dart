@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+
 import 'package:agora_test/constants.dart';
-import 'package:agora_test/dio_helper.dart';
 import 'package:agora_test/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -49,20 +49,29 @@ class _CallScreen extends State<CallScreen> {
   }
 
   void generateUniqueId() {
-    int uniqueId = 123;
+    int uniqueId = 147;
     userGenerateUniqueId = uniqueId;
   }
 
   Future<String> getToken() async {
-    String token = '';
-    generateUniqueId();
-    String dc = widget.userModel.isVolunteer! ? '' : '&role=publisher';
 
-    final res = await DioHelper.getData(
-        url:
-            'access_token?uid=$userGenerateUniqueId&channelName=${widget.channelName}$dc');
-    return res.data['token'] as String;
-    return '006f5407b2fcd7d421187c690e979e48383IAD6MUhGjqzLYB/CHmetOGIYqDiLQa06JYG3XkzfqqTw+Qrqmxw9UWtNIgAAOjXvQAl9ZAQAAQDQxXtkAgDQxXtkAwDQxXtkBADQxXtk';
+    try {
+      // String token = '';
+      generateUniqueId();
+      // String dc = widget.userModel.isVolunteer! ? '' : '&role=publisher';
+      //
+      // final res = await DioHelper.getData(
+      //     url:
+      //         'access_token?uid=$userGenerateUniqueId&channelName=${widget.channelName}$dc');
+      // log(res.data['token'] as String,name: "Anas");
+      // return res.data['token'] as String;
+
+
+      return '006f5407b2fcd7d421187c690e979e48383IABm3/fOWC/9HNu8HXrSyfkQV0B5rzidcMgzKlTSVHDxa4oXxW5NAH/ZIgDrcGYlfBR9ZAQAAQAM0XtkAgAM0XtkAwAM0XtkBAAM0Xtk';
+    }  catch (e,s) {
+      log("Kos",stackTrace: s,name: "Anas");
+      return '';
+    }
   }
 
   @override

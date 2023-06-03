@@ -1,4 +1,5 @@
 import 'package:agora_test/call_screen.dart';
+import 'package:agora_test/dio_helper.dart';
 import 'package:agora_test/user_model.dart';
 import 'package:flutter/material.dart';
 
@@ -56,12 +57,13 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _counter++;
     });
+    DioHelper.init();
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => CallScreen(
           userModel: UserModel(isVolunteer: false),
-          channelName: 'qwe',
+          channelName: 'mina',
         ),
       ),
     );

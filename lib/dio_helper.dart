@@ -8,7 +8,7 @@ import 'package:dio/dio.dart';
   static init() {
     dio = Dio(
       BaseOptions(
-        baseUrl: 'https://rich-puce-oyster-slip.cyclic.app/',//'https://rich-puce-oyster-slip.cyclic.app/
+        baseUrl: '',//'https://rich-puce-oyster-slip.cyclic.app/
         receiveDataWhenStatusError: true,
       ),
     );
