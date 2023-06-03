@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:math' as math;
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:agora_test/constants.dart';
 import 'package:agora_test/dio_helper.dart';
-import 'package:agora_test/end_point.dart';
 import 'package:agora_test/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -50,38 +48,21 @@ class _CallScreen extends State<CallScreen> {
     });
   }
 
-  int generateUniqueId() {
-    math.Random random = math.Random();
-    int timestamp = DateTime.now().millisecondsSinceEpoch;
-    int randomInt = random.nextInt(999999); // Adjust the range as needed
-    int uniqueId = int.parse('$timestamp$randomInt');
+  void generateUniqueId() {
+    int uniqueId = 123;
     userGenerateUniqueId = uniqueId;
-    return uniqueId;
   }
 
   Future<String> getToken() async {
     String token = '';
-    final body = {
-      'uid': generateUniqueId(),
-      'channelName': widget.channelName,
-    };
-    if (!widget.userModel.isVolunteer!) {
-      body['role'] = 'publisher';
-    }
-    await DioHelper.getData(
-      url: GETTOKEN,
-      query: body,
-    ).then((value) {
-      token = (value.data as Map<String, dynamic>)['token'];
-      log(token, name: ' CallScreen -> Token ');
-    }).catchError((e, s) {
-      log(e.toString());
-      log(s.toString());
-      // log(userId.toString(), name: 'user id');
-      // log(userName.toString(), name: 'user name');
-    });
+    generateUniqueId();
+    String dc = widget.userModel.isVolunteer! ? '' : '&role=publisher';
 
-    return '007eJxTYDD11XDbrLRHMj5BIEzj4s/7J1Mu3apJUWFa22fj9Osww3oFhjRTEwPzJKO05BTzFBMjQ0ML82QzS4NUS3PLVBMLYwtj9q3VKQ2BjAzV6qkMjFAI4jMxVFQwMAAAgYscWQ==';
+    final res = await DioHelper.getData(
+        url:
+            'access_token?uid=$userGenerateUniqueId&channelName=${widget.channelName}$dc');
+    return res.data['token'] as String;
+    return '006f5407b2fcd7d421187c690e979e48383IAD6MUhGjqzLYB/CHmetOGIYqDiLQa06JYG3XkzfqqTw+Qrqmxw9UWtNIgAAOjXvQAl9ZAQAAQDQxXtkAgDQxXtkAwDQxXtkBADQxXtk';
   }
 
   @override
@@ -140,7 +121,7 @@ class _CallScreen extends State<CallScreen> {
       await _engine!.joinChannel(
         token: await getToken(), //token,
         channelId: widget.channelName, //userName,
-        uid: 123, //idRandom,
+        uid: 111, //idRandom,
         options: const ChannelMediaOptions(),
       );
     } catch (e, t) {
@@ -148,15 +129,6 @@ class _CallScreen extends State<CallScreen> {
     }
   }
 
-  // void stopCall() async {
-  //   await _engine?.leaveChannel();
-  //   Navigator.pop(context);
-  //   // idRandom = null;
-  //   //  userName = null;
-  //   token = '';
-  //   // _localUserJoined = false;
-  //   _engine = null;
-  // }
 
   void stopCall() async {
     await _engine?.leaveChannel();
@@ -166,16 +138,6 @@ class _CallScreen extends State<CallScreen> {
     Navigator.pop(context);
     // Rest of your code...
   }
-
-  // void stopCall() async {
-  //   await _engine?.leaveChannel();
-  //   _engine = null;
-  //
-  //   Navigator.pop(context);
-  //   idRandom = null;
-  //   userName = null;
-  //   token = null;
-  // }
 
   @override
   void dispose() {
