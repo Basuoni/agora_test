@@ -2,9 +2,8 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
-
 import 'package:agora_test/constants.dart';
-import 'package:agora_test/user_model.dart';
+import 'package:agora_test/dio_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -15,14 +14,15 @@ import 'package:permission_handler/permission_handler.dart';
 class CallScreen extends StatefulWidget {
   const CallScreen({
     Key? key,
-    required this.userModel,
     required this.channelName,
+    required this.onPressed,
   }) : super(key: key);
-  final UserModel userModel;
   final String channelName;
 
   @override
   State<CallScreen> createState() => _CallScreen();
+
+  final VoidCallback onPressed;
 }
 
 class _CallScreen extends State<CallScreen> {
@@ -49,25 +49,14 @@ class _CallScreen extends State<CallScreen> {
   }
 
   void generateUniqueId() {
-    int uniqueId = 147;
+    int uniqueId = 21673;
     userGenerateUniqueId = uniqueId;
   }
 
   Future<String> getToken() async {
 
     try {
-      // String token = '';
-      generateUniqueId();
-      // String dc = widget.userModel.isVolunteer! ? '' : '&role=publisher';
-      //
-      // final res = await DioHelper.getData(
-      //     url:
-      //         'access_token?uid=$userGenerateUniqueId&channelName=${widget.channelName}$dc');
-      // log(res.data['token'] as String,name: "Anas");
-      // return res.data['token'] as String;
-
-
-      return '006f5407b2fcd7d421187c690e979e48383IABm3/fOWC/9HNu8HXrSyfkQV0B5rzidcMgzKlTSVHDxa4oXxW5NAH/ZIgDrcGYlfBR9ZAQAAQAM0XtkAgAM0XtkAwAM0XtkBAAM0Xtk';
+      return '';
     }  catch (e,s) {
       log("Kos",stackTrace: s,name: "Anas");
       return '';
@@ -127,12 +116,24 @@ class _CallScreen extends State<CallScreen> {
       await _engine!.enableVideo();
       await _engine!.startPreview();
 
-      await _engine!.joinChannel(
-        token: await getToken(), //token,
+      final res = await DioHelper.postData(url: 'gettoken', data: {
+        "channel": widget.channelName,
+      });
+      final data = res.data as Map<String, dynamic>;
+      final userGenerateUniqueId = data['uid'] as int;
+      final token = data['token'] as String;
+
+      await _engine!
+          .joinChannel(
+        token: token, //token,
         channelId: widget.channelName, //userName,
-        uid: 111, //idRandom,
+        uid: userGenerateUniqueId, //idRandom,
         options: const ChannelMediaOptions(),
-      );
+      ).catchError((e) {
+        log(e.toString(), name: 'AZSXDC');
+      }).then((value) {
+        widget.onPressed();
+      });
     } catch (e, t) {
       log(e.toString(), stackTrace: t, name: ' NANA ');
     }
@@ -141,16 +142,15 @@ class _CallScreen extends State<CallScreen> {
 
   void stopCall() async {
     await _engine?.leaveChannel();
-
-    //token = '';
     _engine = null;
     Navigator.pop(context);
-    // Rest of your code...
   }
 
   @override
-  void dispose() {
+  void dispose() async {
     super.dispose();
+    await _engine?.leaveChannel();
+    _engine = null;
   }
 
   @override

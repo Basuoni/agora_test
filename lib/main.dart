@@ -1,6 +1,5 @@
 import 'package:agora_test/call_screen.dart';
 import 'package:agora_test/dio_helper.dart';
-import 'package:agora_test/user_model.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -51,29 +50,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-    DioHelper.init();
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CallScreen(
-          userModel: UserModel(isVolunteer: false),
-          channelName: 'mina',
-        ),
-      ),
-    );
-  }
+  TextEditingController textEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
         title: Text(widget.title),
       ),
       body: Center(
@@ -81,20 +64,61 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'You have pushed the button this many times:',
+              ' - Enter Your channel Name - ',
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            TextField(
+              controller: textEditingController,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            MaterialButton(
+              onPressed: () {
+                DioHelper.init();
+                final name = DateTime.now().toString();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CallScreen(
+                      channelName: name,
+                      onPressed: () {
+                        // set name and data to firebase
+                      },
+                    ),
+                  ),
+                );
+              },
+              child: const Text(
+                'Blind',
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            MaterialButton(
+              onPressed: () {
+                DioHelper.init();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CallScreen(
+                      channelName: textEditingController.text,
+                      onPressed: () {
+                        // delete file of data from firebase
+
+                      },
+                    ),
+                  ),
+                );
+              },
+              child: const Text(
+                'Volunteer',
+              ),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
