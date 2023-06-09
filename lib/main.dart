@@ -76,13 +76,13 @@ class _MyHomePageState extends State<MyHomePage> {
             MaterialButton(
               onPressed: () {
                 DioHelper.init();
-                final name = DateTime.now().toString();
+                // final name = DateTime.now().toString();
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => CallScreen(
-                      channelName: name,
-                      onPressed: () {
+                      channelName: textEditingController.text,
+                      onConnect: () {
                         // set name and data to firebase
                       },
                     ),
@@ -104,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   MaterialPageRoute(
                     builder: (context) => CallScreen(
                       channelName: textEditingController.text,
-                      onPressed: () {
+                      onConnect: () {
                         // delete file of data from firebase
 
                       },

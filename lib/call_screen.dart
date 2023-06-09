@@ -15,14 +15,14 @@ class CallScreen extends StatefulWidget {
   const CallScreen({
     Key? key,
     required this.channelName,
-    required this.onPressed,
+    required this.onConnect,
   }) : super(key: key);
   final String channelName;
 
   @override
   State<CallScreen> createState() => _CallScreen();
 
-  final VoidCallback onPressed;
+  final VoidCallback onConnect;
 }
 
 class _CallScreen extends State<CallScreen> {
@@ -119,6 +119,7 @@ class _CallScreen extends State<CallScreen> {
       final res = await DioHelper.postData(url: 'gettoken', data: {
         "channel": widget.channelName,
       });
+      log( res.data.toString(),name:'userGenerateUniqueId');
       final data = res.data as Map<String, dynamic>;
       final userGenerateUniqueId = data['uid'] as int;
       final token = data['token'] as String;
@@ -132,7 +133,7 @@ class _CallScreen extends State<CallScreen> {
       ).catchError((e) {
         log(e.toString(), name: 'AZSXDC');
       }).then((value) {
-        widget.onPressed();
+        widget.onConnect();
       });
     } catch (e, t) {
       log(e.toString(), stackTrace: t, name: ' NANA ');
